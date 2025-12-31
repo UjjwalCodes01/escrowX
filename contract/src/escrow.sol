@@ -39,7 +39,7 @@ contract Escrow {
 
     event amountDeposited(address into , uint256 amount);
     event amountWithdrawaled(address from , uint256 amount);
-    event workSubmitted(address by , address Of);
+    event workSubmitted(address by , address whom);
     event freelancerHired(address by , address freelancer);
     event failed(address by);
     event revertedmoney(address on , uint256 amount);
