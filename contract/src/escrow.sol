@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 contract Escrow {
     
     uint256 public escrowCount;
-    mapping(uint256 => escrow) public getEscrow;
+    mapping(uint256 => EscrowData) public getEscrow;
 
     enum State{
         created ,
@@ -15,7 +15,7 @@ contract Escrow {
         finished
     }
 
-    struct escrow{
+    struct EscrowData{
         address client;
         address freelancer;
         uint256 fund;
@@ -27,7 +27,7 @@ contract Escrow {
     function createEscrow(address freelancer) public {
         escrowCount++;
 
-        getEscrow[escrowCount] = escrow({
+        getEscrow[escrowCount] = EscrowData({
             client : msg.sender,
             freelancer : freelancer,
             fund : 0,
@@ -64,7 +64,7 @@ contract Escrow {
     
     function deposit (uint id) public payable{
         require(getEscrow[id].client != address(0), "invalid escrow id");
-        require(getEscrow[id].status == State.hired , "freelancer are not approved by client");
+        require(getEscrow[id].status == State.created , "freelancer are not approved by client");
         require(msg.sender == getEscrow[id].client , "you are not client");
         uint256 value = msg.value;
         require(value > 0, "value must be greater than 0 eth");
@@ -87,7 +87,7 @@ contract Escrow {
         emit amountWithdrawaled(getEscrow[id].freelancer, amount);
     }
 
-    function ifFailed(uint256 id) public {
+    function cancelDeal(uint256 id) public {
         require(getEscrow[id].client != address(0), "invalid escrow id");
         require(msg.sender == getEscrow[id].client , "you are not client");
         require(getEscrow[id].status == State.funded, "not funded");
