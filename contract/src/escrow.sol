@@ -90,7 +90,7 @@ contract Escrow {
     function cancelDeal(uint256 id) public {
         require(getEscrow[id].client != address(0), "invalid escrow id");
         require(msg.sender == getEscrow[id].client , "you are not client");
-        require(getEscrow[id].status == State.funded, "not funded");
+        require(getEscrow[id].status == State.funded || getEscrow[id].status == State.submitted, "not funded");
         getEscrow[id].status = State.cancelled;
         emit failed(getEscrow[id].client);
     }
